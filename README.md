@@ -1,1 +1,5 @@
 # docker-install
+
+install
+
+uninstall
