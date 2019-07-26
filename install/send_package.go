@@ -2,38 +2,35 @@ package install
 
 import (
 	"fmt"
-	"path"
 	"strings"
 	"sync"
 )
 
-//SendPackage is
-func (s *DockerInstaller) SendPackage(url string) {
-	pkg := path.Base(url)
+func sendPackage(url string) {
 	//only http
 	isHttp := strings.HasPrefix(url, "http")
-	wgetCommand := ""
+	downloadCmd := ""
 	if isHttp {
-		wgetParam := ""
+		downloadParam := ""
 		if strings.HasPrefix(url, "https") {
-			wgetParam = "--no-check-certificate"
+			downloadParam = "--no-check-certificate"
 		}
-		wgetCommand = fmt.Sprintf(" wget %s ", wgetParam)
+		downloadCmd = fmt.Sprintf(" wget %s -O %s", downloadParam, fileName)
 	}
-	remoteCmd := fmt.Sprintf("cd /root &&  %s %s ", wgetCommand, url)
-	kubeLocal := fmt.Sprintf("/root/%s", pkg)
+	remoteCmd := fmt.Sprintf("cd /root &&  %s %s ", downloadCmd, url)
+	localFile := fmt.Sprintf("/root/%s", fileName)
 	var wm sync.WaitGroup
-	for _, master := range Hosts {
+	for _, host := range Hosts {
 		wm.Add(1)
-		go func(master string) {
+		go func(host string) {
 			defer wm.Done()
 			if isHttp {
-				go WatchFileSize(master, kubeLocal, GetFileSize(url))
-				Cmd(master, remoteCmd)
+				go WatchFileSize(host, localFile, GetFileSize(url))
+				Cmd(host, remoteCmd)
 			} else {
-				Copy(master, url, kubeLocal)
+				Copy(host, url, localFile)
 			}
-		}(master)
+		}(host)
 	}
 	wm.Wait()
 }

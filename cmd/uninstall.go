@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"fmt"
+	"github.com/cuisongliu/docker-install/install"
 
 	"github.com/spf13/cobra"
 )
@@ -23,23 +23,21 @@ import (
 // uninstallCmd represents the uninstall command
 var uninstallCmd = &cobra.Command{
 	Use:   "uninstall",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "uninstall docker and delete dockerLib files",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("uninstall called")
+		install := install.NewDockerInstaller()
+		install.UnInstall()
 	},
 }
 
 func init() {
 	rootCmd.AddCommand(uninstallCmd)
-
+	uninstallCmd.Flags().StringVar(&install.User, "user", "root", "servers user name for ssh")
+	uninstallCmd.Flags().StringVar(&install.Passwd, "passwd", "admin", "servers user password for ssh")
+	uninstallCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "docker install hosts")
+	uninstallCmd.Flags().StringVar(&install.DockerLib, "docker-lib", "/var/lib/docker", "docker store location")
 	// Here you will define your flags and configuration settings.
-
+	//uninstallCmd.Flags().StringVar(&install.User, "user", "root", "servers user name for ssh")
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
 	// uninstallCmd.PersistentFlags().String("foo", "", "A help for foo")

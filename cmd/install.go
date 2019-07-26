@@ -15,7 +15,7 @@
 package cmd
 
 import (
-	"fmt"
+	"github.com/cuisongliu/docker-install/install"
 
 	"github.com/spf13/cobra"
 )
@@ -23,15 +23,10 @@ import (
 // installCmd represents the install command
 var installCmd = &cobra.Command{
 	Use:   "install",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "install docker for url",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("install called")
+		install := install.NewDockerInstaller()
+		install.Install()
 	},
 }
 
@@ -39,6 +34,12 @@ func init() {
 	rootCmd.AddCommand(installCmd)
 
 	// Here you will define your flags and configuration settings.
+	installCmd.Flags().StringVar(&install.User, "user", "root", "servers user name for ssh")
+	installCmd.Flags().StringVar(&install.Passwd, "passwd", "admin", "servers user password for ssh")
+	installCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "docker install hosts")
+	installCmd.Flags().StringSliceVar(&install.RegistryArr, "registry", []string{"127.0.0.1"}, "docker's registry ip")
+	installCmd.Flags().StringVar(&install.PkgUrl, "pkg-url", "", "https://download.docker.com/linux/static/stable/x86_64/docker-19.03.0.tgz download offline docker url, or file localtion ex. /root/docker.tgz")
+	installCmd.Flags().StringVar(&install.DockerLib, "docker-lib", "/var/lib/docker", "docker store location")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
