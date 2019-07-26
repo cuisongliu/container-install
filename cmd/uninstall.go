@@ -25,7 +25,7 @@ var uninstallCmd = &cobra.Command{
 	Use:   "uninstall",
 	Short: "uninstall docker and delete dockerLib files",
 	Run: func(cmd *cobra.Command, args []string) {
-		install := install.NewDockerInstaller()
+		install := install.NewInstaller()
 		install.UnInstall()
 	},
 }
@@ -35,7 +35,7 @@ func init() {
 	uninstallCmd.Flags().StringVar(&install.User, "user", "root", "servers user name for ssh")
 	uninstallCmd.Flags().StringVar(&install.Passwd, "passwd", "admin", "servers user password for ssh")
 	uninstallCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "docker install hosts")
-	uninstallCmd.Flags().StringVar(&install.DockerLib, "docker-lib", "/var/lib/docker", "docker store location")
+	uninstallCmd.Flags().StringVar(&install.Lib, "docker-lib", "/var/lib/docker", "docker store location")
 	// Here you will define your flags and configuration settings.
 	//uninstallCmd.Flags().StringVar(&install.User, "user", "root", "servers user name for ssh")
 	// Cobra supports Persistent Flags which will work for this command

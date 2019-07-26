@@ -4,48 +4,57 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/wonderivan/logger"
-	"strings"
 	"text/template"
 )
 
-func tarDocker(host string) {
-	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", fileName)
+type Docker struct{}
+
+func newDocker() stepInterface {
+	var stepInterface stepInterface
+	stepInterface = &Docker{}
+	return stepInterface
+}
+
+func (d Docker) tar(host string) {
+	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", dockerFileName)
 	Cmd(host, cmd)
 }
-func configDocker(host string) {
-	cmd := "mkdir -p " + DockerLib
+
+func (d Docker) config(host string) {
+	cmd := "mkdir -p " + Lib
 	Cmd(host, cmd)
 	cmd = "mkdir -p /etc/docker"
 	Cmd(host, cmd)
-	cmd = "echo \"" + string(dockerConfig(RegistryArr, DockerLib)) + "\" > /etc/docker/daemon.json"
+	cmd = "echo \"" + string(d.configFile()) + "\" > /etc/docker/daemon.json"
 	Cmd(host, cmd)
 }
-func enableDocker(host string) {
-	cmd := "echo \"" + string(dockerServiceFile()) + "\" > /usr/lib/systemd/system/docker.service"
+
+func (d Docker) enable(host string) {
+	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/docker.service"
 	Cmd(host, cmd)
 	cmd = "systemctl enable  docker.service && systemctl restart  docker.service"
 	Cmd(host, cmd)
 }
 
-func versionDocker(host string) {
+func (d Docker) version(host string) {
 	cmd := "docker version"
 	Cmd(host, cmd)
 }
 
-func uninstallDocker(host string) {
+func (d Docker) uninstall(host string) {
 	cmd := "systemctl stop  docker.service && systemctl disable docker.service"
 	Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/runc && rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
 	Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/docker* && rm -rf /var/lib/docker && rm -rf /etc/docker/* "
 	Cmd(host, cmd)
-	if DockerLib != "" {
-		cmd = "rm -rf " + DockerLib
+	if Lib != "" {
+		cmd = "rm -rf " + Lib
 		Cmd(host, cmd)
 	}
 }
 
-func dockerServiceFile() []byte {
+func (d Docker) serviceFile() []byte {
 	var templateText = string(`[Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
@@ -67,8 +76,7 @@ WantedBy=multi-user.target
 `)
 	return []byte(templateText)
 }
-
-func dockerConfig(registryArr []string, dir string) []byte {
+func (d Docker) configFile() []byte {
 	var templateText = string(`{
   \"registry-mirrors\": [
      \"http://373a6594.m.daocloud.io\"
@@ -85,23 +93,10 @@ func dockerConfig(registryArr []string, dir string) []byte {
 		panic(1)
 	}
 	var envMap = make(map[string]interface{})
-	envMap["DOCKER_REGISTRY"] = registryArr
-	envMap["DOCKER_LIB"] = dir
+	envMap["DOCKER_REGISTRY"] = RegistryArr
+	envMap["DOCKER_LIB"] = Lib
 	envMap["ZERO"] = 0
 	var buffer bytes.Buffer
 	_ = tmpl.Execute(&buffer, envMap)
 	return buffer.Bytes()
-}
-
-func registryJoin(registryArr []string) string {
-	var sb strings.Builder
-	for i, v := range registryArr {
-		if i != 0 {
-			sb.Write([]byte(","))
-		}
-		sb.Write([]byte("\""))
-		sb.Write([]byte(v))
-		sb.Write([]byte("\""))
-	}
-	return sb.String()
 }

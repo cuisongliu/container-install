@@ -8,47 +8,59 @@ var (
 	Passwd      string
 	Hosts       []string
 	RegistryArr []string
-	DockerLib   string
+	Lib         string
 	PkgUrl      string
 )
 
-const fileName = "docker.tgz"
+const dockerFileName = "docker.tgz"
 
-func NewDockerInstaller() *DockerInstaller {
-	return &DockerInstaller{}
+func NewInstaller() *Installer {
+	return &Installer{}
 }
 
-type DockerInstaller struct {
+type Installer struct {
 }
 
-type DockerInstallInterface interface {
+type mainInterface interface {
 	Install()
 	UnInstall()
 }
+type stepInterface interface {
+	tar(host string)
+	config(host string)
+	enable(host string)
+	version(host string)
+	uninstall(host string)
+	//
+	serviceFile() []byte
+	configFile() []byte
+}
 
-func (s *DockerInstaller) Install() {
+var docker = newDocker()
+
+func (s *Installer) Install() {
 	var wg sync.WaitGroup
 	for _, host := range Hosts {
 		wg.Add(1)
 		go func(host string) {
 			defer wg.Done()
 			sendPackage(PkgUrl)
-			tarDocker(host)
-			configDocker(host)
-			enableDocker(host)
-			versionDocker(host)
+			docker.tar(host)
+			docker.config(host)
+			docker.enable(host)
+			docker.version(host)
 		}(host)
 	}
 	wg.Wait()
 }
 
-func (s *DockerInstaller) UnInstall() {
+func (s *Installer) UnInstall() {
 	var wg sync.WaitGroup
 	for _, host := range Hosts {
 		wg.Add(1)
 		go func(host string) {
 			defer wg.Done()
-			uninstallDocker(host)
+			docker.uninstall(host)
 		}(host)
 	}
 	wg.Wait()

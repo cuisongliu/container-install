@@ -25,7 +25,7 @@ var installCmd = &cobra.Command{
 	Use:   "install",
 	Short: "install docker for url",
 	Run: func(cmd *cobra.Command, args []string) {
-		install := install.NewDockerInstaller()
+		install := install.NewInstaller()
 		install.Install()
 	},
 }
@@ -39,7 +39,7 @@ func init() {
 	installCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "docker install hosts")
 	installCmd.Flags().StringSliceVar(&install.RegistryArr, "registry", []string{"127.0.0.1"}, "docker's registry ip")
 	installCmd.Flags().StringVar(&install.PkgUrl, "pkg-url", "", "https://download.docker.com/linux/static/stable/x86_64/docker-19.03.0.tgz download offline docker url, or file localtion ex. /root/docker.tgz")
-	installCmd.Flags().StringVar(&install.DockerLib, "docker-lib", "/var/lib/docker", "docker store location")
+	installCmd.Flags().StringVar(&install.Lib, "docker-lib", "/var/lib/docker", "docker store location")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:

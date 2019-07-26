@@ -15,10 +15,10 @@ func sendPackage(url string) {
 		if strings.HasPrefix(url, "https") {
 			downloadParam = "--no-check-certificate"
 		}
-		downloadCmd = fmt.Sprintf(" wget %s -O %s", downloadParam, fileName)
+		downloadCmd = fmt.Sprintf(" wget %s -O %s", downloadParam, dockerFileName)
 	}
 	remoteCmd := fmt.Sprintf("cd /root &&  %s %s ", downloadCmd, url)
-	localFile := fmt.Sprintf("/root/%s", fileName)
+	localFile := fmt.Sprintf("/root/%s", dockerFileName)
 	var wm sync.WaitGroup
 	for _, host := range Hosts {
 		wm.Add(1)
