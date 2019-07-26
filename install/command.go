@@ -35,6 +35,8 @@ func versionDocker(host string) {
 func uninstallDocker(host string) {
 	cmd := "systemctl stop  docker.service && systemctl disable docker.service"
 	Cmd(host, cmd)
+	cmd = "rm -rf /usr/local/bin/runc && rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
+	Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/docker* && rm -rf /var/lib/docker && rm -rf /etc/docker/* "
 	Cmd(host, cmd)
 	if DockerLib != "" {
