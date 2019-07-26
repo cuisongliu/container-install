@@ -24,6 +24,7 @@ type mainInterface interface {
 }
 
 var docker = command.NewDocker()
+var containerd = command.NewContainerd()
 
 func (s Installer) Install() {
 	var wg sync.WaitGroup
@@ -54,5 +55,9 @@ func (s Installer) UnInstall() {
 }
 
 func (s Installer) Print() {
-	docker.Print()
+	if Docker {
+		docker.Print()
+	} else {
+		containerd.Print()
+	}
 }
