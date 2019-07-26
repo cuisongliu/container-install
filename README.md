@@ -2,6 +2,7 @@
 
 ### Install
 install docker from url:
+   localtion file:
   ```shell script
    docker-install install 
           --host 172.16.213.131
@@ -13,7 +14,18 @@ install docker from url:
           --docker-lib /var/lib/docker
           --pkg-url  /root/docker-19.0.3.tgz
 ```
-
+   remote url:
+  ```shell script
+   docker-install install 
+          --host 172.16.213.131
+          --host 172.16.213.132
+          --user root
+          --passwd admin
+          --registry 127.0.0.1
+          --registry 127.0.0.2
+          --docker-lib /var/lib/docker
+          --pkg-url  https://download.docker.com/linux/static/stable/x86_64/docker-18.09.4.tgz
+```
 ### UnInstall
 uninstall docker:
   ```shell script
