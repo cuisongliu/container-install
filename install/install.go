@@ -1,21 +1,17 @@
 package install
 
-import "sync"
-
-//username
-var (
-	User        string
-	Passwd      string
-	Hosts       []string
-	RegistryArr []string
-	Lib         string
-	PkgUrl      string
+import (
+	"github.com/cuisongliu/container-install/install/command"
+	"sync"
 )
 
-const dockerFileName = "docker.tgz"
+var Docker bool
+var Hosts []string
 
-func NewInstaller() *Installer {
-	return &Installer{}
+func NewInstaller() mainInterface {
+	var mainInterface mainInterface
+	mainInterface = &Installer{}
+	return mainInterface
 }
 
 type Installer struct {
@@ -24,44 +20,39 @@ type Installer struct {
 type mainInterface interface {
 	Install()
 	UnInstall()
-}
-type stepInterface interface {
-	tar(host string)
-	config(host string)
-	enable(host string)
-	version(host string)
-	uninstall(host string)
-	//
-	serviceFile() []byte
-	configFile() []byte
+	Print()
 }
 
-var docker = newDocker()
+var docker = command.NewDocker()
 
-func (s *Installer) Install() {
+func (s Installer) Install() {
 	var wg sync.WaitGroup
 	for _, host := range Hosts {
 		wg.Add(1)
 		go func(host string) {
 			defer wg.Done()
-			sendPackage(PkgUrl)
-			docker.tar(host)
-			docker.config(host)
-			docker.enable(host)
-			docker.version(host)
+			docker.SendPackage(host)
+			docker.Tar(host)
+			docker.Config(host)
+			docker.Enable(host)
+			docker.Version(host)
 		}(host)
 	}
 	wg.Wait()
 }
 
-func (s *Installer) UnInstall() {
+func (s Installer) UnInstall() {
 	var wg sync.WaitGroup
 	for _, host := range Hosts {
 		wg.Add(1)
 		go func(host string) {
 			defer wg.Done()
-			docker.uninstall(host)
+			docker.Uninstall(host)
 		}(host)
 	}
 	wg.Wait()
+}
+
+func (s Installer) Print() {
+	docker.Print()
 }

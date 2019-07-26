@@ -1,4 +1,4 @@
-package install
+package command
 
 import (
 	"bytes"
@@ -9,18 +9,24 @@ import (
 
 type Docker struct{}
 
-func newDocker() stepInterface {
+func NewDocker() stepInterface {
 	var stepInterface stepInterface
 	stepInterface = &Docker{}
 	return stepInterface
 }
 
-func (d Docker) tar(host string) {
-	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", dockerFileName)
+const dockerFileName = "docker.tgz"
+
+func (d Docker) SendPackage(host string) {
+	SendPackage(host, PkgUrl, dockerFileName)
+}
+
+func (d Docker) Tar(host string) {
+	cmd := fmt.Sprintf("Tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", dockerFileName)
 	Cmd(host, cmd)
 }
 
-func (d Docker) config(host string) {
+func (d Docker) Config(host string) {
 	cmd := "mkdir -p " + Lib
 	Cmd(host, cmd)
 	cmd = "mkdir -p /etc/docker"
@@ -29,19 +35,19 @@ func (d Docker) config(host string) {
 	Cmd(host, cmd)
 }
 
-func (d Docker) enable(host string) {
+func (d Docker) Enable(host string) {
 	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/docker.service"
 	Cmd(host, cmd)
 	cmd = "systemctl enable  docker.service && systemctl restart  docker.service"
 	Cmd(host, cmd)
 }
 
-func (d Docker) version(host string) {
+func (d Docker) Version(host string) {
 	cmd := "docker version"
 	Cmd(host, cmd)
 }
 
-func (d Docker) uninstall(host string) {
+func (d Docker) Uninstall(host string) {
 	cmd := "systemctl stop  docker.service && systemctl disable docker.service"
 	Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/runc && rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
@@ -99,4 +105,40 @@ func (d Docker) configFile() []byte {
 	var buffer bytes.Buffer
 	_ = tmpl.Execute(&buffer, envMap)
 	return buffer.Bytes()
+}
+
+func (d Docker) Print() {
+	urlPrefix := "https://download.docker.com/linux/static/stable/x86_64/docker-%s.tgz"
+	versions := []string{
+		"17.03.0-ce",
+		"17.03.1-ce",
+		"17.03.2-ce",
+		"17.06.0-ce",
+		"17.06.1-ce",
+		"17.06.2-ce",
+		"17.09.0-ce",
+		"17.09.1-ce",
+		"17.12.0-ce",
+		"17.12.1-ce",
+		"18.03.0-ce",
+		"18.03.1-ce",
+		"18.06.0-ce",
+		"18.06.1-ce",
+		"18.06.2-ce",
+		"18.06.3-ce",
+		"18.09.0",
+		"18.09.1",
+		"18.09.2",
+		"18.09.3",
+		"18.09.4",
+		"18.09.5",
+		"18.09.6",
+		"18.09.7",
+		"18.09.8",
+		"19.03.0",
+	}
+
+	for _, v := range versions {
+		println(fmt.Sprintf(urlPrefix, v))
+	}
 }

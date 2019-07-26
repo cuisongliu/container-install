@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/cuisongliu/docker-install/cmd"
+import "github.com/cuisongliu/container-install/cmd"
 
 func main() {
 	cmd.Execute()

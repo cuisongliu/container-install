@@ -16,17 +16,16 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/cuisongliu/container-install/install"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "docker-install",
-	Short: "docker install for bin file",
+	Use:   "container-install",
+	Short: "container install for bin file",
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	//	Run: func(cmd *cobra.Command, args []string) { },
@@ -45,4 +44,5 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
+	rootCmd.PersistentFlags().BoolVar(&install.Docker, "docker", true, "install the container runtime is docker?if false,the runtime is containerd")
 }

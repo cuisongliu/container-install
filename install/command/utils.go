@@ -1,4 +1,4 @@
-package install
+package command
 
 import (
 	"bytes"
@@ -218,4 +218,25 @@ func SftpConnect(user, password, host string) (*sftp.Client, error) {
 	}
 
 	return sftpClient, nil
+}
+
+func SendPackage(host, url, fileName string) {
+	//only http
+	isHttp := strings.HasPrefix(url, "http")
+	downloadCmd := ""
+	if isHttp {
+		downloadParam := ""
+		if strings.HasPrefix(url, "https") {
+			downloadParam = "--no-check-certificate"
+		}
+		downloadCmd = fmt.Sprintf(" wget %s -O %s", downloadParam, fileName)
+	}
+	remoteCmd := fmt.Sprintf("cd /root &&  %s %s ", downloadCmd, url)
+	localFile := fmt.Sprintf("/root/%s", fileName)
+	if isHttp {
+		go WatchFileSize(host, localFile, GetFileSize(url))
+		Cmd(host, remoteCmd)
+	} else {
+		Copy(host, url, localFile)
+	}
 }

@@ -1,35 +1,38 @@
-# docker-install
+# container-install
 
 ### Install
-install docker from url:
+install container from url:
    location file:
   ```shell script
-   docker-install install 
+   container-install install 
+          --docker true
           --host 172.16.213.131
           --host 172.16.213.132
           --user root
           --passwd admin
           --registry 127.0.0.1
           --registry 127.0.0.2
-          --docker-lib /var/lib/docker
+          --lib /var/lib/docker
           --pkg-url  /root/docker-19.0.3.tgz
 ```
    remote url:
   ```shell script
-   docker-install install 
+   container-install install 
+          --docker true
           --host 172.16.213.131
           --host 172.16.213.132
           --user root
           --passwd admin
           --registry 127.0.0.1
           --registry 127.0.0.2
-          --docker-lib /var/lib/docker
+          --lib /var/lib/docker
           --pkg-url  https://download.docker.com/linux/static/stable/x86_64/docker-18.09.4.tgz
 ```
 ### UnInstall
-uninstall docker:
+uninstall container:
   ```shell script
-   docker-install uninstall 
+   container-install uninstall 
+          --docker true
           --host 172.16.213.131
           --host 172.16.213.132
           --user root
@@ -40,14 +43,14 @@ uninstall docker:
 ### Print Download Url
 print download url for docker:
  ```shell script
-  docker-install print
+  container-install print --docker true
 ```
 
 the Newest version is v19.03.0.
 ex:
 
 ```
-cuisongliu@cuisongliu-PC:~$ docker-install print
+cuisongliu@cuisongliu-PC:~$ container-install print --docker true
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.0-ce.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.1-ce.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.2-ce.tgz

@@ -15,7 +15,8 @@
 package cmd
 
 import (
-	"github.com/cuisongliu/docker-install/install"
+	"github.com/cuisongliu/container-install/install"
+	"github.com/cuisongliu/container-install/install/command"
 
 	"github.com/spf13/cobra"
 )
@@ -34,12 +35,12 @@ func init() {
 	rootCmd.AddCommand(installCmd)
 
 	// Here you will define your flags and configuration settings.
-	installCmd.Flags().StringVar(&install.User, "user", "root", "servers user name for ssh")
-	installCmd.Flags().StringVar(&install.Passwd, "passwd", "admin", "servers user password for ssh")
-	installCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "docker install hosts")
-	installCmd.Flags().StringSliceVar(&install.RegistryArr, "registry", []string{"127.0.0.1"}, "docker's registry ip")
-	installCmd.Flags().StringVar(&install.PkgUrl, "pkg-url", "", "https://download.docker.com/linux/static/stable/x86_64/docker-19.03.0.tgz download offline docker url, or file localtion ex. /root/docker.tgz")
-	installCmd.Flags().StringVar(&install.Lib, "docker-lib", "/var/lib/docker", "docker store location")
+	installCmd.Flags().StringVar(&command.User, "user", "root", "servers user name for ssh")
+	installCmd.Flags().StringVar(&command.Passwd, "passwd", "admin", "servers user password for ssh")
+	installCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "container install hosts")
+	installCmd.Flags().StringSliceVar(&command.RegistryArr, "registry", []string{"127.0.0.1"}, "container's registry ip")
+	installCmd.Flags().StringVar(&command.PkgUrl, "pkg-url", "", "https://download.docker.com/linux/static/stable/x86_64/docker-19.03.0.tgz download offline docker url, or file localtion ex. /root/docker.tgz")
+	installCmd.Flags().StringVar(&command.Lib, "lib", "/var/lib/docker", "store location")
 
 	// Cobra supports Persistent Flags which will work for this command
 	// and all subcommands, e.g.:
