@@ -2,7 +2,7 @@
 
 ### Install
 install docker from url:
-   localtion file:
+   location file:
   ```shell script
    docker-install install 
           --host 172.16.213.131
