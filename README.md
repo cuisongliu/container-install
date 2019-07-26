@@ -5,7 +5,7 @@ install container from url:
    location file:
   ```shell script
    container-install install 
-          --docker=true
+          --docker true
           --host 172.16.213.131
           --host 172.16.213.132
           --user root
@@ -18,7 +18,7 @@ install container from url:
    remote url:
   ```shell script
    container-install install 
-          --docker=true
+          --docker true
           --host 172.16.213.131
           --host 172.16.213.132
           --user root
@@ -32,7 +32,7 @@ install container from url:
 uninstall container:
   ```shell script
    container-install uninstall 
-          --docker=true
+          --docker true
           --host 172.16.213.131
           --host 172.16.213.132
           --user root
@@ -43,14 +43,14 @@ uninstall container:
 ### Print Download Url
 print download url for docker:
  ```shell script
-  container-install print --docker=true
+  container-install print --docker true
 ```
 
 the docker Newest version is v19.03.0.
 ex:
 
 ```shell script
-cuisongliu@cuisongliu-PC:~$ container-install print --docker=true
+cuisongliu@cuisongliu-PC:~$ container-install print --docker true
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.0-ce.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.1-ce.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.2-ce.tgz
@@ -82,7 +82,7 @@ https://download.docker.com/linux/static/stable/x86_64/docker-19.03.0.tgz
 the containerd Newest version is v1.2.7
 ex:
 ```shell script
-cuisongliu@cuisongliu-PC:~$ go run main.go print --docker=false
+cuisongliu@cuisongliu-PC:~$ go run main.go print --docker false
 https://github.com/containerd/containerd/releases/download/v1.1.0/containerd-1.1.0.linux-amd64.tar.gz
 https://github.com/containerd/containerd/releases/download/v1.1.1/containerd-1.1.1.linux-amd64.tar.gz
 https://github.com/containerd/containerd/releases/download/v1.1.2/containerd-1.1.2.linux-amd64.tar.gz

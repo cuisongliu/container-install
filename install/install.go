@@ -5,7 +5,7 @@ import (
 	"sync"
 )
 
-var Docker bool
+var Docker string
 var Hosts []string
 
 func NewInstaller() mainInterface {
@@ -55,7 +55,7 @@ func (s Installer) UnInstall() {
 }
 
 func (s Installer) Print() {
-	if Docker {
+	if Docker == "true" {
 		docker.Print()
 	} else {
 		containerd.Print()
