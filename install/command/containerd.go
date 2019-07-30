@@ -15,44 +15,45 @@ func NewContainerd() stepInterface {
 	return stepInterface
 }
 
-const containerdFileName = "docker.tgz"
+const containerdFileName = "containerd.tgz"
 
 func (d Containerd) SendPackage(host string) {
-	SendPackage(host, PkgUrl, dockerFileName)
+	SendPackage(host, PkgUrl, containerdFileName)
 }
 
 func (d Containerd) Tar(host string) {
-	cmd := fmt.Sprintf("Tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", dockerFileName)
+	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", containerdFileName)
 	Cmd(host, cmd)
 }
 
 func (d Containerd) Config(host string) {
 	cmd := "mkdir -p " + Lib
 	Cmd(host, cmd)
-	cmd = "mkdir -p /etc/docker"
+	cmd = "mkdir -p /etc/containerd"
 	Cmd(host, cmd)
-	cmd = "echo \"" + string(d.configFile()) + "\" > /etc/docker/daemon.json"
+	cmd = "containerd config default > /etc/containerd/config.toml"
+	//cmd = "echo \"" + string(d.configFile()) + "\" > /etc/docker/daemon.json"
 	Cmd(host, cmd)
 }
 
 func (d Containerd) Enable(host string) {
-	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/docker.service"
+	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/containerd.service"
 	Cmd(host, cmd)
-	cmd = "systemctl enable  docker.service && systemctl restart  docker.service"
+	cmd = "systemctl enable  containerd.service && systemctl restart  containerd.service"
 	Cmd(host, cmd)
 }
 
 func (d Containerd) Version(host string) {
-	cmd := "docker version"
+	cmd := "containerd --version"
 	Cmd(host, cmd)
 }
 
 func (d Containerd) Uninstall(host string) {
-	cmd := "systemctl stop  docker.service && systemctl disable docker.service"
+	cmd := "systemctl stop  containerd.service && systemctl disable containerd.service"
 	Cmd(host, cmd)
-	cmd = "rm -rf /usr/local/bin/runc && rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
+	cmd = "rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
 	Cmd(host, cmd)
-	cmd = "rm -rf /usr/local/bin/docker* && rm -rf /var/lib/docker && rm -rf /etc/docker/* "
+	cmd = "rm -rf /var/lib/containerd && rm -rf /etc/containerd/* "
 	Cmd(host, cmd)
 	if Lib != "" {
 		cmd = "rm -rf " + Lib
@@ -62,21 +63,21 @@ func (d Containerd) Uninstall(host string) {
 
 func (d Containerd) serviceFile() []byte {
 	var templateText = string(`[Unit]
-Description=Docker Application Container Engine
-Documentation=https://docs.docker.com
+Description=containerd container runtime
+Documentation=https://containerd.io
 After=network.target
-
+  
 [Service]
-Type=notify
-ExecStart=/usr/local/bin/dockerd
-ExecReload=/bin/kill -s HUP $MAINPID
-LimitNOFILE=infinity
-LimitNPROC=infinity
-LimitCORE=infinity
-TimeoutStartSec=0
+ExecStart=/usr/local/bin/containerd
+Restart=always
+RestartSec=5
 Delegate=yes
 KillMode=process
-
+OOMScoreAdjust=-999
+LimitNOFILE=1048576
+LimitNPROC=infinity
+LimitCORE=infinity
+  
 [Install]
 WantedBy=multi-user.target
 `)

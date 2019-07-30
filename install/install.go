@@ -2,15 +2,26 @@ package install
 
 import (
 	"github.com/cuisongliu/container-install/install/command"
+	"strings"
 	"sync"
 )
 
 var Docker string
 var Hosts []string
 
+const (
+	Install = 1 + iota
+	Uninstall
+	Print
+)
+
 func NewInstaller() mainInterface {
 	var mainInterface mainInterface
 	mainInterface = &Installer{}
+	if IsDocker() {
+	} else {
+
+	}
 	return mainInterface
 }
 
@@ -32,11 +43,7 @@ func (s Installer) Install() {
 		wg.Add(1)
 		go func(host string) {
 			defer wg.Done()
-			docker.SendPackage(host)
-			docker.Tar(host)
-			docker.Config(host)
-			docker.Enable(host)
-			docker.Version(host)
+			factory(Install, host)
 		}(host)
 	}
 	wg.Wait()
@@ -48,16 +55,47 @@ func (s Installer) UnInstall() {
 		wg.Add(1)
 		go func(host string) {
 			defer wg.Done()
-			docker.Uninstall(host)
+			factory(Uninstall, host)
 		}(host)
 	}
 	wg.Wait()
 }
 
 func (s Installer) Print() {
-	if Docker == "true" {
-		docker.Print()
-	} else {
-		containerd.Print()
+	factory(Print, "")
+}
+
+func IsDocker() bool {
+	return strings.ToUpper(Docker) == "T"
+}
+
+func factory(itype int, host string) {
+	switch itype {
+	case Install:
+		if IsDocker() {
+			docker.SendPackage(host)
+			docker.Tar(host)
+			docker.Config(host)
+			docker.Enable(host)
+			docker.Version(host)
+		} else {
+			containerd.SendPackage(host)
+			containerd.Tar(host)
+			containerd.Config(host)
+			containerd.Enable(host)
+			containerd.Version(host)
+		}
+	case Uninstall:
+		if IsDocker() {
+			docker.Uninstall(host)
+		} else {
+			containerd.Uninstall(host)
+		}
+	case Print:
+		if IsDocker() {
+			docker.Print()
+		} else {
+			containerd.Print()
+		}
 	}
 }

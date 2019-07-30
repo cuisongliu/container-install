@@ -22,7 +22,7 @@ func (d Docker) SendPackage(host string) {
 }
 
 func (d Docker) Tar(host string) {
-	cmd := fmt.Sprintf("Tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", dockerFileName)
+	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", dockerFileName)
 	Cmd(host, cmd)
 }
 

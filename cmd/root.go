@@ -44,5 +44,5 @@ func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
-	rootCmd.PersistentFlags().StringVar(&install.Docker, "docker", "true", "install the container runtime is docker?if false,the runtime is containerd")
+	rootCmd.PersistentFlags().StringVar(&install.Docker, "docker", "T", "install the container runtime is docker?if false,the runtime is containerd(T/F)")
 }

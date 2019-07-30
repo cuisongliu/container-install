@@ -35,8 +35,8 @@ func init() {
 	rootCmd.AddCommand(uninstallCmd)
 	uninstallCmd.Flags().StringVar(&command.User, "user", "root", "servers user name for ssh")
 	uninstallCmd.Flags().StringVar(&command.Passwd, "passwd", "admin", "servers user password for ssh")
-	uninstallCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "docker install hosts")
-	uninstallCmd.Flags().StringVar(&command.Lib, "docker-lib", "/var/lib/docker", "docker store location")
+	uninstallCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "install hosts")
+	uninstallCmd.Flags().StringVar(&command.Lib, "lib", "", "store location,default : docker is /var/lib/docker , containerd is /var/lib/containerd ")
 	// Here you will define your flags and configuration settings.
 	//uninstallCmd.Flags().StringVar(&install.User, "user", "root", "servers user name for ssh")
 	// Cobra supports Persistent Flags which will work for this command
