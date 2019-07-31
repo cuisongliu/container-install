@@ -92,7 +92,7 @@ the docker Newest version is v19.03.0.
 ex:
 
 ```shell script
-cuisongliu@cuisongliu-PC:~$ container-install print --docker true
+cuisongliu@cuisongliu-PC:~$ container-install print --docker T
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.0-ce.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.1-ce.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.2-ce.tgz
@@ -124,7 +124,7 @@ https://download.docker.com/linux/static/stable/x86_64/docker-19.03.0.tgz
 the containerd Newest version is v1.2.7
 ex:
 ```shell script
-cuisongliu@cuisongliu-PC:~$ go run main.go print --docker F
+cuisongliu@cuisongliu-PC:~$ container-install print --docker F
 https://github.com/containerd/containerd/releases/download/v1.1.0/containerd-1.1.0.linux-amd64.tar.gz
 https://github.com/containerd/containerd/releases/download/v1.1.1/containerd-1.1.1.linux-amd64.tar.gz
 https://github.com/containerd/containerd/releases/download/v1.1.2/containerd-1.1.2.linux-amd64.tar.gz
