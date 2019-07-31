@@ -17,17 +17,25 @@ func NewDocker() stepInterface {
 
 const dockerFileName = "docker.tgz"
 
-func (d Docker) SendPackage(host string) {
+func (d *Docker) lib() string {
+	if Lib == "" {
+		return "/var/lib/docker"
+	} else {
+		return Lib
+	}
+}
+
+func (d *Docker) SendPackage(host string) {
 	SendPackage(host, PkgUrl, dockerFileName)
 }
 
-func (d Docker) Tar(host string) {
+func (d *Docker) Tar(host string) {
 	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", dockerFileName)
 	Cmd(host, cmd)
 }
 
-func (d Docker) Config(host string) {
-	cmd := "mkdir -p " + Lib
+func (d *Docker) Config(host string) {
+	cmd := "mkdir -p " + d.lib()
 	Cmd(host, cmd)
 	cmd = "mkdir -p /etc/docker"
 	Cmd(host, cmd)
@@ -35,32 +43,32 @@ func (d Docker) Config(host string) {
 	Cmd(host, cmd)
 }
 
-func (d Docker) Enable(host string) {
+func (d *Docker) Enable(host string) {
 	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/docker.service"
 	Cmd(host, cmd)
 	cmd = "systemctl enable  docker.service && systemctl restart  docker.service"
 	Cmd(host, cmd)
 }
 
-func (d Docker) Version(host string) {
+func (d *Docker) Version(host string) {
 	cmd := "docker version"
 	Cmd(host, cmd)
 }
 
-func (d Docker) Uninstall(host string) {
+func (d *Docker) Uninstall(host string) {
 	cmd := "systemctl stop  docker.service && systemctl disable docker.service"
 	Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/runc && rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
 	Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/docker* && rm -rf /var/lib/docker && rm -rf /etc/docker/* "
 	Cmd(host, cmd)
-	if Lib != "" {
-		cmd = "rm -rf " + Lib
+	if d.lib() != "" {
+		cmd = "rm -rf " + d.lib()
 		Cmd(host, cmd)
 	}
 }
 
-func (d Docker) serviceFile() []byte {
+func (d *Docker) serviceFile() []byte {
 	var templateText = string(`[Unit]
 Description=Docker Application Container Engine
 Documentation=https://docs.docker.com
@@ -82,7 +90,7 @@ WantedBy=multi-user.target
 `)
 	return []byte(templateText)
 }
-func (d Docker) configFile() []byte {
+func (d *Docker) configFile() []byte {
 	var templateText = string(`{
   \"registry-mirrors\": [
      \"http://373a6594.m.daocloud.io\"
@@ -100,14 +108,13 @@ func (d Docker) configFile() []byte {
 	}
 	var envMap = make(map[string]interface{})
 	envMap["DOCKER_REGISTRY"] = RegistryArr
-	envMap["DOCKER_LIB"] = Lib
-	envMap["ZERO"] = 0
+	envMap["DOCKER_LIB"] = d.lib()
 	var buffer bytes.Buffer
 	_ = tmpl.Execute(&buffer, envMap)
 	return buffer.Bytes()
 }
 
-func (d Docker) Print() {
+func (d *Docker) Print() {
 	urlPrefix := "https://download.docker.com/linux/static/stable/x86_64/docker-%s.tgz"
 	versions := []string{
 		"17.03.0-ce",

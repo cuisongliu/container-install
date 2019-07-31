@@ -17,7 +17,9 @@ type stepInterface interface {
 	Version(host string)
 	Uninstall(host string)
 	Print()
+
 	//
+	lib() string
 	serviceFile() []byte
 	configFile() []byte
 }

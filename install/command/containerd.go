@@ -17,51 +17,59 @@ func NewContainerd() stepInterface {
 
 const containerdFileName = "containerd.tgz"
 
-func (d Containerd) SendPackage(host string) {
+func (d *Containerd) lib() string {
+	if Lib == "" {
+		return "/var/lib/containerd"
+	} else {
+		return Lib
+	}
+}
+func (d *Containerd) SendPackage(host string) {
 	SendPackage(host, PkgUrl, containerdFileName)
 }
 
-func (d Containerd) Tar(host string) {
+func (d *Containerd) Tar(host string) {
 	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", containerdFileName)
 	Cmd(host, cmd)
 }
-
-func (d Containerd) Config(host string) {
-	cmd := "mkdir -p " + Lib
+func (d *Containerd) Config(host string) {
+	cmd := "mkdir -p " + d.lib()
 	Cmd(host, cmd)
 	cmd = "mkdir -p /etc/containerd"
 	Cmd(host, cmd)
-	cmd = "containerd config default > /etc/containerd/config.toml"
-	//cmd = "echo \"" + string(d.configFile()) + "\" > /etc/docker/daemon.json"
+	//cmd = "containerd config default > /etc/containerd/config.toml"
+	cmd = "echo \"" + string(d.configFile()) + "\" > /etc/containerd/config.toml"
 	Cmd(host, cmd)
 }
 
-func (d Containerd) Enable(host string) {
+func (d *Containerd) Enable(host string) {
 	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/containerd.service"
 	Cmd(host, cmd)
 	cmd = "systemctl enable  containerd.service && systemctl restart  containerd.service"
 	Cmd(host, cmd)
 }
 
-func (d Containerd) Version(host string) {
+func (d *Containerd) Version(host string) {
 	cmd := "containerd --version"
 	Cmd(host, cmd)
+	logger.Warn("pull docker hub command. ex: ctr images pull docker.io/library/alpine:3.8")
+	logger.Warn("pull http registry command. ex:  ctr images pull 10.0.45.222/library/alpine:3.8 --plain-http")
 }
 
-func (d Containerd) Uninstall(host string) {
+func (d *Containerd) Uninstall(host string) {
 	cmd := "systemctl stop  containerd.service && systemctl disable containerd.service"
 	Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
 	Cmd(host, cmd)
 	cmd = "rm -rf /var/lib/containerd && rm -rf /etc/containerd/* "
 	Cmd(host, cmd)
-	if Lib != "" {
-		cmd = "rm -rf " + Lib
+	if d.lib() != "" {
+		cmd = "rm -rf " + d.lib()
 		Cmd(host, cmd)
 	}
 }
 
-func (d Containerd) serviceFile() []byte {
+func (d *Containerd) serviceFile() []byte {
 	var templateText = string(`[Unit]
 Description=containerd container runtime
 Documentation=https://containerd.io
@@ -83,32 +91,101 @@ WantedBy=multi-user.target
 `)
 	return []byte(templateText)
 }
-func (d Containerd) configFile() []byte {
-	var templateText = string(`{
-  \"registry-mirrors\": [
-     \"http://373a6594.m.daocloud.io\"
-  ],
-  {{if len .DOCKER_REGISTRY}}
-  \"insecure-registries\":
-        [{{range $i,$v :=.DOCKER_REGISTRY}}{{if eq $i  0}}\"{{$v}}\"{{else}},\"{{$v}}\"{{end}}{{end}}],
-  {{end}}
-  \"graph\":\"{{.DOCKER_LIB}}\"
-}`)
+func (d *Containerd) configFile() []byte {
+	var templateText = string(`root = \"{{.CONTAINERD_LIB}}\"
+state = \"/run/containerd\"
+oom_score = 0
+
+[grpc]
+  address = \"/run/containerd/containerd.sock\"
+  uid = 0
+  gid = 0
+  max_recv_message_size = 16777216
+  max_send_message_size = 16777216
+
+[debug]
+  address = \"\"
+  uid = 0
+  gid = 0
+  level = \"\"
+
+[metrics]
+  address = \"\"
+  grpc_histogram = false
+
+[cgroup]
+  path = \"\"
+
+[plugins]
+  [plugins.cgroups]
+    no_prometheus = false
+  [plugins.cri]
+    stream_server_address = \"127.0.0.1\"
+    stream_server_port = \"0\"
+    enable_selinux = false
+    sandbox_image = \"k8s.gcr.io/pause:3.1\"
+    stats_collect_period = 10
+    systemd_cgroup = false
+    enable_tls_streaming = false
+    max_container_log_line_size = 16384
+    [plugins.cri.containerd]
+      snapshotter = \"overlayfs\"
+      no_pivot = false
+      [plugins.cri.containerd.default_runtime]
+        runtime_type = \"io.containerd.runtime.v1.linux\"
+        runtime_engine = \"\"
+        runtime_root = \"\"
+      [plugins.cri.containerd.untrusted_workload_runtime]
+        runtime_type = \"\"
+        runtime_engine = \"\"
+        runtime_root = \"\"
+    [plugins.cri.cni]
+      bin_dir = \"/opt/cni/bin\"
+      conf_dir = \"/etc/cni/net.d\"
+      conf_template = \"\"
+    [plugins.cri.registry]
+      [plugins.cri.registry.mirrors]
+        [plugins.cri.registry.mirrors.\"docker.io\"]
+          endpoint = [\"https://registry-1.docker.io\"]
+        {{range .CONTAINERD_REGISTRY -}}[plugins.cri.registry.mirrors.\"{{.}}\"]
+          endpoint = [\"{{.}}\"]
+    {{end -}}
+    [plugins.cri.x509_key_pair_streaming]
+      tls_cert_file = \"\"
+      tls_key_file = \"\"
+  [plugins.diff-service]
+    default = [\"walking\"]
+  [plugins.linux]
+    shim = \"containerd-shim\"
+    runtime = \"runc\"
+    runtime_root = \"\"
+    no_shim = false
+    shim_debug = false
+  [plugins.opt]
+    path = \"/opt/containerd\"
+  [plugins.restart]
+    interval = \"10s\"
+  [plugins.scheduler]
+    pause_threshold = 0.02
+    deletion_threshold = 0
+    mutation_threshold = 100
+    schedule_delay = \"0s\"
+    startup_delay = \"100ms\"
+`)
 	tmpl, err := template.New("text").Parse(templateText)
 	if err != nil {
 		logger.Error("template parse failed:", err)
 		panic(1)
 	}
 	var envMap = make(map[string]interface{})
-	envMap["DOCKER_REGISTRY"] = RegistryArr
-	envMap["DOCKER_LIB"] = Lib
-	envMap["ZERO"] = 0
+	envMap["CONTAINERD_REGISTRY"] = RegistryArr
+	envMap["CONTAINERD_LIB"] = d.lib()
 	var buffer bytes.Buffer
 	_ = tmpl.Execute(&buffer, envMap)
 	return buffer.Bytes()
 }
 
-func (d Containerd) Print() {
+func (d *Containerd) Print() {
 	urlPrefix := "https://github.com/containerd/containerd/releases/download/v%s/containerd-%s.linux-amd64.tar.gz"
 	versions := []string{
 		"1.1.0",
