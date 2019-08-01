@@ -1,5 +1,8 @@
 # container-install
 
+### PreInstall
+Download latest [container-install](https://github.com/cuisongliu/container-install/releases/download/v1.2/container-install) on release page.
+
 ### Install Docker
 install container from url:
    location file:
