@@ -1,8 +1,9 @@
 package command
 
 var (
-	User   string
-	Passwd string
+	User           string
+	Passwd         string
+	PrivateKeyFile string
 
 	RegistryArr []string
 	Lib         string
