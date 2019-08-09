@@ -85,6 +85,11 @@ uninstall container:
           --docker-lib /var/lib/containerd
 ```
 
+### Login type
+
+default use --password is password login
+use  --pk=/root/.ssh/id_rsa is private key login
+
 ### Print Download Url
 print download url for docker:
  ```shell script
