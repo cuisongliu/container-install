@@ -8,7 +8,7 @@ steps:
 - name: build
   image: golang:1.11.3
   commands:
-      - go build -o container-install
+      - go get && go build -o container-install
 
 - name: publish
   image: plugins/github-release
