@@ -2,20 +2,20 @@ kind: pipeline
 name: default
 workspace:
     base: /go
-    path: src/github.com/cuisongliu/docker-install
+    path: src/github.com/cuisongliu/container-install
 
 steps:
 - name: build
   image: golang:1.11.3
   commands:
-      - go build -o docker-install
+      - go build -o container-install
 
 - name: publish
   image: plugins/github-release
   settings:
     api_key:
         from_secret: git-release-token
-    files: docker-install
+    files: container-install
     title: ${DRONE_TAG}
     note: README.md
   when:
