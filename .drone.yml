@@ -17,7 +17,7 @@ steps:
         from_secret: git-release-token
     files: docker-install
     title: ${DRONE_TAG}
-    note: Note.md
+    note: README.md
   when:
      event:
      - tag
