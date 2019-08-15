@@ -35,7 +35,7 @@ func init() {
 	rootCmd.AddCommand(uninstallCmd)
 	uninstallCmd.Flags().StringVar(&command.User, "user", "root", "servers user name for ssh")
 	uninstallCmd.Flags().StringVar(&command.Passwd, "passwd", "admin", "servers user password for ssh")
-	uninstallCmd.Flags().StringVar(&command.PrivateKeyFile, "pk", "/root/.ssh/id_rsa", "servers user private key file for ssh")
+	uninstallCmd.Flags().StringVar(&command.PrivateKeyFile, "pk", "", "servers user private key file for ssh")
 
 	uninstallCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "install hosts")
 	uninstallCmd.Flags().StringVar(&command.Lib, "lib", "", "store location,default : docker is /var/lib/docker , containerd is /var/lib/containerd ")
