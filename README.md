@@ -7,28 +7,28 @@ Download latest [container-install](https://github.com/cuisongliu/container-inst
 install container from url:
    location file:
   ```shell script
-   container-install install 
-          --docker T
-          --host 172.16.213.131
-          --host 172.16.213.132
-          --user root
-          --passwd admin
-          --registry 127.0.0.1
-          --registry 127.0.0.2
-          --lib /var/lib/docker
+   container-install install \
+          --docker T \
+          --host 172.16.213.131 \
+          --host 172.16.213.132 \
+          --user root \
+          --passwd admin \
+          --registry 127.0.0.1 \
+          --registry 127.0.0.2 \
+          --lib /var/lib/docker \
           --pkg-url  /root/docker-19.0.3.tgz
 ```
    remote url:
   ```shell script
-   container-install install 
-          --docker T
-          --host 172.16.213.131
-          --host 172.16.213.132
-          --user root
-          --passwd admin
-          --registry 127.0.0.1
-          --registry 127.0.0.2
-          --lib /var/lib/docker
+   container-install install \
+          --docker T \
+          --host 172.16.213.131 \
+          --host 172.16.213.132 \
+          --user root \
+          --passwd admin \
+          --registry 127.0.0.1 \
+          --registry 127.0.0.2 \
+          --lib /var/lib/docker \
           --pkg-url  https://download.docker.com/linux/static/stable/x86_64/docker-18.09.4.tgz
 ```
 
@@ -36,53 +36,53 @@ install container from url:
 install container from url:
    location file:
   ```shell script
-   container-install install 
-          --docker F
-          --host 172.16.213.131
-          --host 172.16.213.132
-          --user root
-          --passwd admin
-          --registry 127.0.0.1
-          --registry 127.0.0.2
-          --lib /var/lib/containerd
+   container-install install \
+          --docker F \
+          --host 172.16.213.131 \
+          --host 172.16.213.132 \
+          --user root \
+          --passwd admin \
+          --registry 127.0.0.1 \
+          --registry 127.0.0.2 \
+          --lib /var/lib/containerd \
           --pkg-url  /root/containerd-1.2.7.tgz
 ```
    remote url:
   ```shell script
-   container-install install 
-          --docker F
-          --host 172.16.213.131
-          --host 172.16.213.132
-          --user root
-          --passwd admin
-          --registry 127.0.0.1
-          --registry 127.0.0.2
-          --lib /var/lib/containerd
+   container-install install  \
+          --docker F \
+          --host 172.16.213.131 \
+          --host 172.16.213.132 \
+          --user root \
+          --passwd admin \
+          --registry 127.0.0.1 \
+          --registry 127.0.0.2 \
+          --lib /var/lib/containerd \
           --pkg-url  https://github.com/containerd/containerd/releases/download/v1.2.7/containerd-1.2.7.linux-amd64.tar.gz
 ```
 
 ### UnInstall Docker
 uninstall container:
   ```shell script
-   container-install uninstall 
-          --docker T
-          --host 172.16.213.131
-          --host 172.16.213.132
-          --user root
-          --passwd admin
-          --docker-lib /var/lib/docker
+   container-install uninstall  \
+          --docker T \
+          --host 172.16.213.131 \
+          --host 172.16.213.132 \
+          --user root \
+          --passwd admin \
+          --lib /var/lib/docker
 ```
 
 ### UnInstall Containerd
 uninstall container:
   ```shell script
-   container-install uninstall 
-          --docker F
-          --host 172.16.213.131
-          --host 172.16.213.132
-          --user root
-          --passwd admin
-          --docker-lib /var/lib/containerd
+   container-install uninstall \
+          --docker F \
+          --host 172.16.213.131 \
+          --host 172.16.213.132 \
+          --user root \
+          --passwd admin \
+          --lib /var/lib/containerd
 ```
 
 ### Login type
