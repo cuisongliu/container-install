@@ -2,11 +2,10 @@ package install
 
 import (
 	"github.com/cuisongliu/container-install/install/command"
-	"strings"
 	"sync"
 )
 
-var Docker string
+var Docker bool
 var Hosts []string
 
 const (
@@ -66,7 +65,7 @@ func (s Installer) Print() {
 }
 
 func IsDocker() bool {
-	return strings.ToUpper(Docker) == "T"
+	return Docker
 }
 
 func factory(itype int, host string) {
