@@ -8,7 +8,7 @@ install container from url:
    location file:
   ```shell script
    container-install install \
-          --d \
+          -d \
           --host 172.16.213.131 \
           --host 172.16.213.132 \
           --user root \
@@ -21,7 +21,7 @@ install container from url:
    remote url:
   ```shell script
    container-install install \
-          --d \
+          -d \
           --host 172.16.213.131 \
           --host 172.16.213.132 \
           --user root \
@@ -63,7 +63,7 @@ install container from url:
 uninstall container:
   ```shell script
    container-install uninstall  \
-          --d \
+          -d \
           --host 172.16.213.131 \
           --host 172.16.213.132 \
           --user root \
