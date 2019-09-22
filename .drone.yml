@@ -6,7 +6,7 @@ workspace:
 
 steps:
 - name: build
-  image: golang:1.11.3
+  image: golang:1.12
   commands:
       - export GO111MODULE="on" && go get && go build -o container-install
 
