@@ -3,6 +3,7 @@ package command
 import (
 	"bytes"
 	"fmt"
+	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
 	"text/template"
 )
@@ -25,47 +26,47 @@ func (d *Containerd) lib() string {
 	}
 }
 func (d *Containerd) SendPackage(host string) {
-	SendPackage(host, PkgUrl, containerdFileName)
+	sendPackage(host, PkgUrl, containerdFileName)
 }
 
 func (d *Containerd) Tar(host string) {
 	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", containerdFileName)
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 }
 func (d *Containerd) Config(host string) {
 	cmd := "mkdir -p " + d.lib()
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	cmd = "mkdir -p /etc/containerd"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	//cmd = "containerd config default > /etc/containerd/config.toml"
 	cmd = "echo \"" + string(d.configFile()) + "\" > /etc/containerd/config.toml"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 }
 
 func (d *Containerd) Enable(host string) {
 	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/containerd.service"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	cmd = "systemctl enable  containerd.service && systemctl restart  containerd.service"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 }
 
 func (d *Containerd) Version(host string) {
 	cmd := "containerd --version"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	logger.Warn("pull docker hub command. ex: ctr images pull docker.io/library/alpine:3.8")
 	logger.Warn("pull http registry command. ex:  ctr images pull 10.0.45.222/library/alpine:3.8 --plain-http")
 }
 
 func (d *Containerd) Uninstall(host string) {
 	cmd := "systemctl stop  containerd.service && systemctl disable containerd.service"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	cmd = "rm -rf /var/lib/containerd && rm -rf /etc/containerd/* "
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	if d.lib() != "" {
 		cmd = "rm -rf " + d.lib()
-		Cmd(host, cmd)
+		sealos.Cmd(host, cmd)
 	}
 }
 

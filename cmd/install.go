@@ -17,7 +17,7 @@ package cmd
 import (
 	"github.com/cuisongliu/container-install/install"
 	"github.com/cuisongliu/container-install/install/command"
-
+	sealos "github.com/fanux/sealos/install"
 	"github.com/spf13/cobra"
 )
 
@@ -35,9 +35,9 @@ func init() {
 	rootCmd.AddCommand(installCmd)
 
 	// Here you will define your flags and configuration settings.
-	installCmd.Flags().StringVar(&command.User, "user", "root", "servers user name for ssh")
-	installCmd.Flags().StringVar(&command.Passwd, "passwd", "admin", "servers user password for ssh")
-	installCmd.Flags().StringVar(&command.PrivateKeyFile, "pk", "", "servers user private key file for ssh")
+	installCmd.Flags().StringVar(&sealos.User, "user", "root", "servers user name for ssh")
+	installCmd.Flags().StringVar(&sealos.Passwd, "passwd", "admin", "servers user password for ssh")
+	installCmd.Flags().StringVar(&sealos.PrivateKeyFile, "pk", "", "servers user private key file for ssh")
 
 	installCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "container install hosts")
 	installCmd.Flags().StringSliceVar(&command.RegistryArr, "registry", []string{"127.0.0.1"}, "container's registry ip")

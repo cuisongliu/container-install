@@ -3,6 +3,7 @@ package command
 import (
 	"bytes"
 	"fmt"
+	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
 	"text/template"
 )
@@ -26,45 +27,45 @@ func (d *Docker) lib() string {
 }
 
 func (d *Docker) SendPackage(host string) {
-	SendPackage(host, PkgUrl, dockerFileName)
+	sendPackage(host, PkgUrl, dockerFileName)
 }
 
 func (d *Docker) Tar(host string) {
 	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", dockerFileName)
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 }
 
 func (d *Docker) Config(host string) {
 	cmd := "mkdir -p " + d.lib()
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	cmd = "mkdir -p /etc/docker"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	cmd = "echo \"" + string(d.configFile()) + "\" > /etc/docker/daemon.json"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 }
 
 func (d *Docker) Enable(host string) {
 	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/docker.service"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	cmd = "systemctl enable  docker.service && systemctl restart  docker.service"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 }
 
 func (d *Docker) Version(host string) {
 	cmd := "docker version"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 }
 
 func (d *Docker) Uninstall(host string) {
 	cmd := "systemctl stop  docker.service && systemctl disable docker.service"
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/runc && rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/docker* && rm -rf /var/lib/docker && rm -rf /etc/docker/* "
-	Cmd(host, cmd)
+	sealos.Cmd(host, cmd)
 	if d.lib() != "" {
 		cmd = "rm -rf " + d.lib()
-		Cmd(host, cmd)
+		sealos.Cmd(host, cmd)
 	}
 }
 
