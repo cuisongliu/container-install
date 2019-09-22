@@ -8,3 +8,5 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/wonderivan/logger v1.0.0
 )
+
+replace github.com/fanux/sealos => github.com/fanux/sealos v0.0.0-20190920022206-099454a5a42e
