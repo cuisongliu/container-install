@@ -11,4 +11,4 @@ test-docker:
 	./container-install print -d
 
 test-containerd:
-	./container-install print -d
+	./container-install print
