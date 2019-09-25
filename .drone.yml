@@ -8,8 +8,7 @@ steps:
 - name: build
   image: golang:1.12
   commands:
-      - make generator
-      - export GO111MODULE="on" && go get && go build -o container-install
+      - make
 
 - name: publish
   image: plugins/github-release
