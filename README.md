@@ -90,14 +90,14 @@ use  --pk=/root/.ssh/id_rsa is private key login
 ### Print Download Url
 print download url for docker:
  ```shell script
-  container-install print --d
+  container-install print -d
 ```
 
 the docker Newest version is v19.03.0.
 ex:
 
 ```shell script
-cuisongliu@cuisongliu-PC:~$ container-install print --d
+cuisongliu@cuisongliu-PC:~$ container-install print -d
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.0-ce.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.1-ce.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-17.03.2-ce.tgz

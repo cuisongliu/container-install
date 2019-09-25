@@ -2,6 +2,7 @@ package command
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
@@ -188,26 +189,12 @@ oom_score = 0
 
 func (d *Containerd) Print() {
 	urlPrefix := "https://github.com/containerd/containerd/releases/download/v%s/containerd-%s.linux-amd64.tar.gz"
-	versions := []string{
-		"1.1.0",
-		"1.1.1",
-		"1.1.2",
-		"1.1.3",
-		"1.1.4",
-		"1.1.5",
-		"1.1.6",
-		"1.1.7",
-
-		"1.2.0",
-		"1.2.1",
-		"1.2.2",
-		"1.2.3",
-		"1.2.4",
-		"1.2.5",
-		"1.2.6",
-		"1.2.7",
+	data, err := Asset("install/command/containerd.json")
+	if err != nil {
+		logger.Error(err)
 	}
-
+	var versions []string
+	_ = json.Unmarshal(data, &versions)
 	for _, v := range versions {
 		println(fmt.Sprintf(urlPrefix, v, v))
 	}

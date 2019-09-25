@@ -2,6 +2,7 @@ package command
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
@@ -117,35 +118,12 @@ func (d *Docker) configFile() []byte {
 
 func (d *Docker) Print() {
 	urlPrefix := "https://download.docker.com/linux/static/stable/x86_64/docker-%s.tgz"
-	versions := []string{
-		"17.03.0-ce",
-		"17.03.1-ce",
-		"17.03.2-ce",
-		"17.06.0-ce",
-		"17.06.1-ce",
-		"17.06.2-ce",
-		"17.09.0-ce",
-		"17.09.1-ce",
-		"17.12.0-ce",
-		"17.12.1-ce",
-		"18.03.0-ce",
-		"18.03.1-ce",
-		"18.06.0-ce",
-		"18.06.1-ce",
-		"18.06.2-ce",
-		"18.06.3-ce",
-		"18.09.0",
-		"18.09.1",
-		"18.09.2",
-		"18.09.3",
-		"18.09.4",
-		"18.09.5",
-		"18.09.6",
-		"18.09.7",
-		"18.09.8",
-		"19.03.0",
+	data, err := Asset("install/command/docker.json")
+	if err != nil {
+		logger.Error(err)
 	}
-
+	var versions []string
+	_ = json.Unmarshal(data, &versions)
 	for _, v := range versions {
 		println(fmt.Sprintf(urlPrefix, v))
 	}
