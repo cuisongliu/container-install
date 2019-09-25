@@ -6,6 +6,7 @@ import (
 	"fmt"
 	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
+	"os"
 	"text/template"
 )
 
@@ -198,4 +199,27 @@ func (d *Containerd) Print() {
 	for _, v := range versions {
 		println(fmt.Sprintf(urlPrefix, v, v))
 	}
+}
+
+func (d *Containerd) Fetch() {
+	//https://api.github.com/repos/containerd/containerd/tags?page=3
+
+	var versions []string
+	logger.Debug("写入json文件")
+	dockerJson, err := os.OpenFile("install/command/containerd.json", os.O_WRONLY, 0755)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	}
+	defer dockerJson.Close()
+	//json解析
+	encoder := json.NewEncoder(dockerJson)
+	err = encoder.Encode(&versions)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	} else {
+		logger.Info("构建成功")
+	}
+
 }

@@ -9,3 +9,8 @@ func TestDocker_fetch(t *testing.T) {
 	d := &command.Docker{}
 	d.Fetch()
 }
+
+func TestContainerd_fetch(t *testing.T) {
+	d := &command.Containerd{}
+	d.Fetch()
+}
