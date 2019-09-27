@@ -197,6 +197,7 @@ func (d *Containerd) Print() {
 	}
 	var versions []string
 	_ = json.Unmarshal(data, &versions)
+	logger.Debug(string(data))
 	for _, v := range versions {
 		println(v)
 	}
