@@ -2,9 +2,14 @@ package command
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
+	"net/http"
+	"os"
+	"strings"
 	"text/template"
 )
 
@@ -116,37 +121,62 @@ func (d *Docker) configFile() []byte {
 }
 
 func (d *Docker) Print() {
-	urlPrefix := "https://download.docker.com/linux/static/stable/x86_64/docker-%s.tgz"
-	versions := []string{
-		"17.03.0-ce",
-		"17.03.1-ce",
-		"17.03.2-ce",
-		"17.06.0-ce",
-		"17.06.1-ce",
-		"17.06.2-ce",
-		"17.09.0-ce",
-		"17.09.1-ce",
-		"17.12.0-ce",
-		"17.12.1-ce",
-		"18.03.0-ce",
-		"18.03.1-ce",
-		"18.06.0-ce",
-		"18.06.1-ce",
-		"18.06.2-ce",
-		"18.06.3-ce",
-		"18.09.0",
-		"18.09.1",
-		"18.09.2",
-		"18.09.3",
-		"18.09.4",
-		"18.09.5",
-		"18.09.6",
-		"18.09.7",
-		"18.09.8",
-		"19.03.0",
+	urlPrefix := "https://download.docker.com/linux/static/stable/x86_64/%s"
+	data, err := Asset("install/command/docker.json")
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
 	}
-
+	var versions []string
+	_ = json.Unmarshal(data, &versions)
 	for _, v := range versions {
 		println(fmt.Sprintf(urlPrefix, v))
 	}
+}
+
+func (d *Docker) Fetch() {
+	url := "https://download.docker.com/linux/static/stable/x86_64/"
+	resp, err := http.Get(url)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	}
+	if resp.StatusCode != 200 {
+		logger.Error("http code is not 200")
+		os.Exit(1)
+	}
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	}
+	ahtml := doc.Find("a")
+	var versions []string
+	for _, html := range ahtml.Nodes {
+		attr := html.Attr
+		if len(attr) > 0 {
+			if strings.Contains(attr[0].Val, "docker") {
+				versions = append(versions, attr[0].Val)
+				logger.Debug("加入缓存值：%s", attr[0].Val)
+			}
+		}
+	}
+	//
+	logger.Debug("写入json文件")
+	dockerJson, err := os.OpenFile("install/command/docker.json", os.O_WRONLY, 0755)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	}
+	defer dockerJson.Close()
+	//json解析
+	encoder := json.NewEncoder(dockerJson)
+	err = encoder.Encode(&versions)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	} else {
+		logger.Info("构建成功")
+	}
+
 }

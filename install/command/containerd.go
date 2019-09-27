@@ -2,9 +2,13 @@ package command
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
+	"net/http"
+	"os"
 	"text/template"
 )
 
@@ -187,28 +191,59 @@ oom_score = 0
 }
 
 func (d *Containerd) Print() {
-	urlPrefix := "https://github.com/containerd/containerd/releases/download/v%s/containerd-%s.linux-amd64.tar.gz"
-	versions := []string{
-		"1.1.0",
-		"1.1.1",
-		"1.1.2",
-		"1.1.3",
-		"1.1.4",
-		"1.1.5",
-		"1.1.6",
-		"1.1.7",
-
-		"1.2.0",
-		"1.2.1",
-		"1.2.2",
-		"1.2.3",
-		"1.2.4",
-		"1.2.5",
-		"1.2.6",
-		"1.2.7",
+	data, err := Asset("install/command/containerd.json")
+	if err != nil {
+		logger.Error(err)
 	}
-
+	var versions []string
+	_ = json.Unmarshal(data, &versions)
 	for _, v := range versions {
-		println(fmt.Sprintf(urlPrefix, v, v))
+		println(v)
 	}
+}
+
+func (d *Containerd) Fetch() {
+	url := "https://containerd.io/downloads/"
+	resp, err := http.Get(url)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	}
+	if resp.StatusCode != 200 {
+		logger.Error("http code is not 200")
+		os.Exit(1)
+	}
+	var versions []string
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	}
+	ahtml := doc.Find("a[class=\"button is-dark is-clipboard\"]")
+	for _, html := range ahtml.Nodes {
+		attr := html.Attr
+		if len(attr) == 3 {
+			if attr[2].Key == "data-clipboard-text" {
+				versions = append(versions, attr[2].Val)
+				logger.Debug("加入缓存值：%s", attr[2].Val)
+			}
+		}
+	}
+	logger.Debug("写入json文件")
+	dockerJson, err := os.OpenFile("install/command/containerd.json", os.O_WRONLY, 0755)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	}
+	defer dockerJson.Close()
+	//json解析
+	encoder := json.NewEncoder(dockerJson)
+	err = encoder.Encode(&versions)
+	if err != nil {
+		logger.Error(err)
+		os.Exit(1)
+	} else {
+		logger.Info("构建成功")
+	}
+
 }

@@ -8,7 +8,11 @@ steps:
 - name: build
   image: golang:1.12
   commands:
-      - export GO111MODULE="on" && go get && go build -o container-install
+      - make generator-docker
+      - make generator-containerd
+      - make
+      - ./container-install print -d
+      - ./container-install print
 
 - name: publish
   image: plugins/github-release
