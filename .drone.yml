@@ -10,9 +10,9 @@ steps:
   commands:
       - make generator-docker
       - make generator-containerd
-      - cat install/command/docker.json
-      - cat install/command/containerd.json
       - make
+      - ./container-install print -d
+      - ./container-install print
 
 - name: publish
   image: plugins/github-release
