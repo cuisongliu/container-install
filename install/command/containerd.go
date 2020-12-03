@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
-	"net/http"
 	"os"
 	"text/template"
 )
@@ -203,29 +201,23 @@ func (d *Containerd) Print() {
 }
 
 func (d *Containerd) Fetch() {
-	url := "https://containerd.io/downloads/"
-	resp, err := http.Get(url)
-	if err != nil {
-		logger.Error(err)
-		os.Exit(1)
-	}
-	if resp.StatusCode != 200 {
-		logger.Error("http code is not 200")
-		os.Exit(1)
+	//https://api.github.com/repos/containerd/containerd/tags?page=3
+	type tags struct {
+		Name string `json:"name"`
 	}
 	var versions []string
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
-	if err != nil {
-		logger.Error(err)
-		os.Exit(1)
-	}
-	ahtml := doc.Find("a[class=\"button is-dark is-clipboard\"]")
-	for _, html := range ahtml.Nodes {
-		attr := html.Attr
-		if len(attr) == 3 {
-			if attr[2].Key == "data-clipboard-text" {
-				versions = append(versions, attr[2].Val)
-				logger.Debug("加入缓存值：%s", attr[2].Val)
+	for i := 1; ; i++ {
+		url := fmt.Sprintf("https://api.github.com/repos/containerd/containerd/tags?page=%d", i)
+		var tagses []tags
+		data, _ := getUrl(url)
+		if data != nil {
+			_ = json.Unmarshal(data, &tagses)
+			if len(tagses) > 0 {
+				for j := 0; j < len(tagses); j++ {
+					versions = append(versions, tagses[j].Name)
+				}
+			} else {
+				break
 			}
 		}
 	}
