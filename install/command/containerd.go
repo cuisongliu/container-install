@@ -203,8 +203,25 @@ func (d *Containerd) Print() {
 
 func (d *Containerd) Fetch() {
 	//https://api.github.com/repos/containerd/containerd/tags?page=3
-
+	type tags struct {
+		Name string `json:"name"`
+	}
 	var versions []string
+	for i := 1; ; i++ {
+		url := fmt.Sprintf("https://api.github.com/repos/containerd/containerd/tags?page=%d", i)
+		var tagses []tags
+		data, _ := getUrl(url)
+		if data != nil {
+			_ = json.Unmarshal(data, &tagses)
+			if len(tagses) > 0 {
+				for j := 0; j < len(tagses); j++ {
+					versions = append(versions, tagses[j].Name)
+				}
+			} else {
+				break
+			}
+		}
+	}
 	logger.Debug("写入json文件")
 	dockerJson, err := os.OpenFile("install/command/containerd.json", os.O_WRONLY, 0755)
 	if err != nil {

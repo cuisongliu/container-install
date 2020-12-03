@@ -1,9 +1,17 @@
 package command
 
 import (
+	"bytes"
+	"crypto/tls"
 	"fmt"
 	sealos "github.com/fanux/sealos/install"
+	"github.com/wonderivan/logger"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 	"strings"
+	"time"
 )
 
 var (
@@ -46,4 +54,35 @@ func sendPackage(host, url, fileName string) {
 	} else {
 		sealos.Copy(host, url, localFile)
 	}
+}
+
+func getUrl(rawurl string) ([]byte, error) {
+	u, err := url.Parse(rawurl)
+	if err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	if u == nil {
+		return nil, fmt.Errorf("解析url为空")
+	}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+	var client = &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+		Timeout: 5 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	logger.Debug("client do http status:", resp.Status)
+	buf := bytes.NewBuffer(nil)
+	_, err = io.Copy(buf, resp.Body)
+	_ = resp.Body.Close()
+	return ioutil.ReadAll(buf)
 }
