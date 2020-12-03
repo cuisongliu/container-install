@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/PuerkitoBio/goquery"
 	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
+	"net/http"
 	"os"
 	"text/template"
 )
@@ -189,7 +191,6 @@ oom_score = 0
 }
 
 func (d *Containerd) Print() {
-	urlPrefix := "https://github.com/containerd/containerd/releases/download/v%s/containerd-%s.linux-amd64.tar.gz"
 	data, err := Asset("install/command/containerd.json")
 	if err != nil {
 		logger.Error(err)
@@ -197,7 +198,7 @@ func (d *Containerd) Print() {
 	var versions []string
 	_ = json.Unmarshal(data, &versions)
 	for _, v := range versions {
-		println(fmt.Sprintf(urlPrefix, v, v))
+		println(v)
 	}
 }
 

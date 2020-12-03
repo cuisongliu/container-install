@@ -9,7 +9,10 @@ steps:
   image: golang:1.12
   commands:
       - make generator-docker
+      - make generator-containerd
       - make
+      - ./container-install print -d
+      - ./container-install print
 
 - name: publish
   image: plugins/github-release
