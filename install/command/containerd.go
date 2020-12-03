@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
-	"net/http"
 	"os"
 	"text/template"
 )
