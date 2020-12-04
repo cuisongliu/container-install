@@ -123,7 +123,37 @@ https://download.docker.com/linux/static/stable/x86_64/docker-18.09.5.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-18.09.6.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-18.09.7.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-18.09.8.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-18.09.9.tgz
 https://download.docker.com/linux/static/stable/x86_64/docker-19.03.0.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.1.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.10.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.11.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.12.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.13.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.14.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.2.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.3.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.4.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.5.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.6.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.7.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.8.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-19.03.9.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.0.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.1.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.10.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.11.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.12.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.13.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.14.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.2.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.3.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.4.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.5.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.6.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.7.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.8.tgz
+https://download.docker.com/linux/static/stable/x86_64/docker-rootless-extras-19.03.9.tgz
 ```
 
 the containerd Newest version is v1.2.7
