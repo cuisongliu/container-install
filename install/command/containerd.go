@@ -7,6 +7,7 @@ import (
 	sealos "github.com/fanux/sealos/install"
 	"github.com/wonderivan/logger"
 	"os"
+	"strings"
 	"text/template"
 )
 
@@ -189,6 +190,7 @@ oom_score = 0
 }
 
 func (d *Containerd) Print() {
+	urlPrefix := "https://github.com/containerd/containerd/releases/download/%s/containerd-%s-linux-amd64.tar.gz"
 	data, err := Asset("install/command/containerd.json")
 	if err != nil {
 		logger.Error(err)
@@ -196,7 +198,8 @@ func (d *Containerd) Print() {
 	var versions []string
 	_ = json.Unmarshal(data, &versions)
 	for _, v := range versions {
-		println(v)
+		vNoV := strings.ReplaceAll(v, "v", "")
+		println(fmt.Sprintf(urlPrefix, v, vNoV))
 	}
 }
 
@@ -213,8 +216,8 @@ func (d *Containerd) Fetch() {
 		if data != nil {
 			_ = json.Unmarshal(data, &tagses)
 			if len(tagses) > 0 {
-				for j := 0; j < len(tagses); j++ {
-					versions = append(versions, tagses[j].Name)
+				for _, v := range tagses {
+					versions = append(versions, v.Name)
 				}
 			} else {
 				break
