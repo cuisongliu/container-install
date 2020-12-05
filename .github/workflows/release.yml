@@ -24,14 +24,6 @@ jobs:
         run: |
           TAG=${GITHUB_REF#refs/tags/}
           echo ::set-output name=tag_name::${TAG}
-          rm -rf install/command/*.json
-          touch install/command/docker.json
-          touch install/command/containerd.json
-          make generator-docker
-          make generator-containerd
-          git config --global user.email "cuisongliu@qq.com"
-          git config --global user.name "cuisongliu"
-          git commit -am "fix"
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1
         with:
