@@ -29,6 +29,8 @@ jobs:
           touch install/command/containerd.json
           make generator-docker
           make generator-containerd
+          git config --global user.email "cuisongliu@qq.com"
+          git config --global user.name "cuisongliu"
           git commit -am "fix"
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1
