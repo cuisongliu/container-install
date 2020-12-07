@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/tls"
 	"fmt"
-	"github.com/cuisongliu/container-install/install"
-	"github.com/cuisongliu/container-install/install/filesize"
+	"github.com/cuisongliu/container-install/pkg"
+	"github.com/cuisongliu/container-install/pkg/filesize"
 	"github.com/wonderivan/logger"
 	"io"
 	"io/ioutil"
@@ -50,10 +50,10 @@ func sendPackage(host, url, fileName string) {
 	remoteCmd := fmt.Sprintf("cd /root &&  %s %s ", downloadCmd, url)
 	localFile := fmt.Sprintf("/root/%s", fileName)
 	if isHttp {
-		go install.SSHConfig.LoggerFileSize(host, localFile, int(filesize.Do(url)))
-		install.SSHConfig.Cmd(host, remoteCmd)
+		go pkg.SSHConfig.LoggerFileSize(host, localFile, int(filesize.Do(url)))
+		pkg.SSHConfig.Cmd(host, remoteCmd)
 	} else {
-		install.SSHConfig.Copy(host, url, localFile)
+		pkg.SSHConfig.Copy(host, url, localFile)
 	}
 }
 

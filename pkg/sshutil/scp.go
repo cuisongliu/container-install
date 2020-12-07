@@ -3,7 +3,7 @@ package sshutil
 import (
 	"bytes"
 	"fmt"
-	"github.com/cuisongliu/container-install/install/md5sum"
+	"github.com/cuisongliu/container-install/pkg/md5sum"
 	"github.com/pkg/sftp"
 	"github.com/wonderivan/logger"
 	"golang.org/x/crypto/ssh"

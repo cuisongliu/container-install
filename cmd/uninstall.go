@@ -17,6 +17,7 @@ package cmd
 import (
 	"github.com/cuisongliu/container-install/install"
 	"github.com/cuisongliu/container-install/install/command"
+	"github.com/cuisongliu/container-install/pkg"
 	"github.com/spf13/cobra"
 )
 
@@ -32,10 +33,10 @@ var uninstallCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(uninstallCmd)
-	uninstallCmd.Flags().StringVar(&install.SSHConfig.User, "user", "root", "servers user name for ssh")
-	uninstallCmd.Flags().StringVar(&install.SSHConfig.Password, "passwd", "admin", "servers user password for ssh")
-	uninstallCmd.Flags().StringVar(&install.SSHConfig.PkFile, "pk", "", "servers user private key file for ssh")
-	uninstallCmd.Flags().StringVar(&install.SSHConfig.PkPassword, "pk-passwd", "", "private key password for ssh")
+	uninstallCmd.Flags().StringVar(&pkg.SSHConfig.User, "user", "root", "servers user name for ssh")
+	uninstallCmd.Flags().StringVar(&pkg.SSHConfig.Password, "passwd", "admin", "servers user password for ssh")
+	uninstallCmd.Flags().StringVar(&pkg.SSHConfig.PkFile, "pk", "", "servers user private key file for ssh")
+	uninstallCmd.Flags().StringVar(&pkg.SSHConfig.PkPassword, "pk-passwd", "", "private key password for ssh")
 
 	uninstallCmd.Flags().StringSliceVar(&install.Hosts, "host", []string{}, "install hosts")
 	uninstallCmd.Flags().StringVar(&command.Lib, "lib", "", "store location,default : docker is /var/lib/docker , containerd is /var/lib/containerd ")
