@@ -10,10 +10,8 @@ $ wget -c https://cuisongliu.oss-cn-beijing.aliyuncs.com/container-install/lates
 
 ### [amd64 下载地址]
 [oss 下载地址](https://cuisongliu.oss-cn-beijing.aliyuncs.com/container-install/latest/linux_amd64/container-install)
-[latest 版本 oss下载地址](https://cuisongliu.oss-cn-beijing.aliyuncs.com/container-install/latest/linux_arm64/container-install)
 ### [arm64 下载地址]
 [oss 下载地址](https://cuisongliu.oss-cn-beijing.aliyuncs.com/container-install/latest/linux_arm64/container-install)
-[latest 版本 oss下载地址](https://cuisongliu.oss-cn-beijing.aliyuncs.com/container-install/latest/linux_arm64/container-install)
 
 
 ### PreInstall
