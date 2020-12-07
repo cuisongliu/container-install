@@ -32,3 +32,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           VERSION: ${{ steps.prepare.outputs.tag_name }}
+      - name: Note
+        id: Note
+        env:
+          VERSION: ${{ steps.prepare.outputs.tag_name }}
+        run: |
+           sh note.sh
+      - name: Build binareies to oss
+        run: |
+          echo ${{ secrets.OSS_CONFIG }} |base64 --decode >> .ossutilconfig
+          wget http://gosspublic.alicdn.com/ossutil/1.6.19/ossutil64  && chmod 755 ossutil64
+          ./ossutil64 -c .ossutilconfig cp -r -f dist/container-install_darwin_amd64 oss://cuisongliu/container-install/${{ steps.prepare.outputs.tag_name }}/darwin_amd64
+          ./ossutil64 -c .ossutilconfig cp -r -f dist/container-install_linux_amd64 oss://cuisongliu/container-install/${{ steps.prepare.outputs.tag_name }}/linux_amd64
+          ./ossutil64 -c .ossutilconfig cp -r -f dist/container-install_linux_arm64 oss://cuisongliu/container-install/${{ steps.prepare.outputs.tag_name }}/linux_arm64
+          ./ossutil64 -c .ossutilconfig cp -r -f dist/container-install_windows_amd64 oss://cuisongliu/container-install/${{ steps.prepare.outputs.tag_name }}/windows_amd64
