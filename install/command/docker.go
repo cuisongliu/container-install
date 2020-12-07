@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-	sealos "github.com/fanux/sealos/install"
+	"github.com/cuisongliu/container-install/install"
 	"github.com/wonderivan/logger"
 	"net/http"
 	"os"
@@ -37,40 +37,40 @@ func (d *Docker) SendPackage(host string) {
 
 func (d *Docker) Tar(host string) {
 	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", dockerFileName)
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 }
 
 func (d *Docker) Config(host string) {
 	cmd := "mkdir -p " + d.lib()
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	cmd = "mkdir -p /etc/docker"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	cmd = "echo \"" + string(d.configFile()) + "\" > /etc/docker/daemon.json"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 }
 
 func (d *Docker) Enable(host string) {
 	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/docker.service"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	cmd = "systemctl enable  docker.service && systemctl restart  docker.service"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 }
 
 func (d *Docker) Version(host string) {
 	cmd := "docker version"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 }
 
 func (d *Docker) Uninstall(host string) {
 	cmd := "systemctl stop  docker.service && systemctl disable docker.service"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/runc && rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/docker* && rm -rf /var/lib/docker && rm -rf /etc/docker/* "
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	if d.lib() != "" {
 		cmd = "rm -rf " + d.lib()
-		sealos.Cmd(host, cmd)
+		install.SSHConfig.Cmd(host, cmd)
 	}
 }
 

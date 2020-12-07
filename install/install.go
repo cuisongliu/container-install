@@ -2,11 +2,13 @@ package install
 
 import (
 	"github.com/cuisongliu/container-install/install/command"
+	"github.com/cuisongliu/container-install/install/sshutil"
 	"sync"
 )
 
 var Docker bool
 var Hosts []string
+var SSHConfig sshutil.SSH
 
 const (
 	Install = 1 + iota

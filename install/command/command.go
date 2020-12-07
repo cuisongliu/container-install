@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"crypto/tls"
 	"fmt"
-	sealos "github.com/fanux/sealos/install"
+	"github.com/cuisongliu/container-install/install"
+	"github.com/cuisongliu/container-install/install/filesize"
 	"github.com/wonderivan/logger"
 	"io"
 	"io/ioutil"
@@ -49,10 +50,10 @@ func sendPackage(host, url, fileName string) {
 	remoteCmd := fmt.Sprintf("cd /root &&  %s %s ", downloadCmd, url)
 	localFile := fmt.Sprintf("/root/%s", fileName)
 	if isHttp {
-		go sealos.WatchFileSize(host, localFile, sealos.GetFileSize(url))
-		sealos.Cmd(host, remoteCmd)
+		go install.SSHConfig.LoggerFileSize(host, localFile, int(filesize.Do(url)))
+		install.SSHConfig.Cmd(host, remoteCmd)
 	} else {
-		sealos.Copy(host, url, localFile)
+		install.SSHConfig.Copy(host, url, localFile)
 	}
 }
 

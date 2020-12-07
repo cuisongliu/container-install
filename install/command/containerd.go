@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	sealos "github.com/fanux/sealos/install"
+	"github.com/cuisongliu/container-install/install"
 	"github.com/wonderivan/logger"
 	"os"
 	"strings"
@@ -34,42 +34,42 @@ func (d *Containerd) SendPackage(host string) {
 
 func (d *Containerd) Tar(host string) {
 	cmd := fmt.Sprintf("tar --strip-components=1 -xvzf /root/%s -C /usr/local/bin", containerdFileName)
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 }
 func (d *Containerd) Config(host string) {
 	cmd := "mkdir -p " + d.lib()
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	cmd = "mkdir -p /etc/containerd"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	//cmd = "containerd config default > /etc/containerd/config.toml"
 	cmd = "echo \"" + string(d.configFile()) + "\" > /etc/containerd/config.toml"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 }
 
 func (d *Containerd) Enable(host string) {
 	cmd := "echo \"" + string(d.serviceFile()) + "\" > /usr/lib/systemd/system/containerd.service"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	cmd = "systemctl enable  containerd.service && systemctl restart  containerd.service"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 }
 
 func (d *Containerd) Version(host string) {
 	cmd := "containerd --version"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	logger.Warn("pull docker hub command. ex: ctr images pull docker.io/library/alpine:3.8")
 	logger.Warn("pull http registry command. ex:  ctr images pull 10.0.45.222/library/alpine:3.8 --plain-http")
 }
 
 func (d *Containerd) Uninstall(host string) {
 	cmd := "systemctl stop  containerd.service && systemctl disable containerd.service"
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	cmd = "rm -rf /usr/local/bin/ctr && rm -rf /usr/local/bin/containerd* "
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	cmd = "rm -rf /var/lib/containerd && rm -rf /etc/containerd/* "
-	sealos.Cmd(host, cmd)
+	install.SSHConfig.Cmd(host, cmd)
 	if d.lib() != "" {
 		cmd = "rm -rf " + d.lib()
-		sealos.Cmd(host, cmd)
+		install.SSHConfig.Cmd(host, cmd)
 	}
 }
 
